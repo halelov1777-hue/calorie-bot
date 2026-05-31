@@ -59,7 +59,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"\nТвоя цель: {DAILY_LIMIT} ккал/день 🎯"
     )
 
-async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def today_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     d = get_user_diary(user_id)
     if not d["items"]:
@@ -74,7 +74,7 @@ async def today(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text += f"\n{status} *Остаток:* {max(0, remaining)} ккал"
     await update.message.reply_text(text, parse_mode="Markdown")
 
-async def reset(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def reset_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     diary[user_id] = {"date": get_today(), "total": 0, "items": []}
     await update.message.reply_text("🔄 Дневник сброшен!")
@@ -119,16 +119,15 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Команды:\n/today — дневник\n/reset — сброс"
     )
 
-async def main():
+def main():
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("today", today))
-    app.add_handler(CommandHandler("reset", reset))
+    app.add_handler(CommandHandler("today", today_cmd))
+    app.add_handler(CommandHandler("reset", reset_cmd))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
     logger.info("Бот запущен!")
-    await app.run_polling()
+    app.run_polling(drop_pending_updates=True)
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    main()
