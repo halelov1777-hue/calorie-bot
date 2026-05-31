@@ -10,8 +10,8 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 # ==============================
 # ВСТАВЬ СВОИ ТОКЕНЫ СЮДА:
 # ==============================
-TELEGRAM_TOKEN = "ВСТАВЬ_ТОКЕН_ТЕЛЕГРАМ_СЮДА"
-GEMINI_API_KEY = "ВСТАВЬ_GEMINI_API_KEY_СЮДА"
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 # ==============================
 
 DAILY_LIMIT = 1950
