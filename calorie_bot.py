@@ -7,12 +7,8 @@ import httpx
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-# ==============================
-# ВСТАВЬ СВОИ ТОКЕНЫ СЮДА:
-# ==============================
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-# ==============================
 
 DAILY_LIMIT = 1950
 logging.basicConfig(level=logging.INFO)
@@ -123,7 +119,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Команды:\n/today — дневник\n/reset — сброс"
     )
 
-def main():
+async def main():
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("today", today))
@@ -131,7 +127,8 @@ def main():
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
     logger.info("Бот запущен!")
-    app.run_polling()
+    await app.run_polling()
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
